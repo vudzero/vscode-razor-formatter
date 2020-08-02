@@ -2,6 +2,7 @@ trigger:
     branches:
         include:
             - master
+            - development
     tags:
         include:
             - refs/tags/v*
