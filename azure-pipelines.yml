@@ -4,16 +4,21 @@ trigger:
             - master
     tags:
         include:
-            - v*
+            - refs/tags/v*
+
+pr:
+    branches:
+        include:
+            - "*"
 
 strategy:
     matrix:
         linux:
             imageName: "ubuntu-16.04"
-        mac:
-            imageName: "macos-10.15"
-        windows:
-            imageName: "vs2017-win2016"
+        # mac:
+        #     imageName: "macos-10.15"
+        # windows:
+        #     imageName: "vs2017-win2016"
 
 pool:
     vmImage: $(imageName)
@@ -39,3 +44,11 @@ steps:
       displayName: Run Tests
       env:
           DISPLAY: ":99.0"
+
+    - bash: |
+          echo ">>> Publish"
+          yarn deploy
+      displayName: Publish
+      condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'master'))
+      env:
+          VSCE_PAT: $(VSCE_PAT)
